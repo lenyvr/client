@@ -8,8 +8,11 @@
 
 ## 2. Roadmap and Upcoming Use Cases
 *Agent: Break down here the technical steps (ports, use cases, adapters, beans) for the requirements that I will request.*
-- [ ] Generate CRUD for client entity, the root endpoint name is /clients.
-- [ ] Generate unit tests for the use cases.
+**Important:** client entity is an extension of a person entity. To save a client, the person entity must be saved first.
+- [ ] generate create a client use case.
+- [ ] generate an Update client use case.
+- [ ] generate a List clients use case; this one must have a filter by name, identification, or client code. 
+- [ ] Generate unit tests for each use case.
 - [ ] Generate unit test for client and person entity.
 - [ ] Generate integration tests for the use cases.
 
