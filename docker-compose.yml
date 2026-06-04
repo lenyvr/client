@@ -14,23 +14,15 @@ services:
       - devsu-fintech-network
 
   devsu-client-app:
-    image: gradle:8.14-jdk21
+    build: .
     container_name: devsu-client-app
     ports:
       - "${APP_PORT}:8080"
-    volumes:
-      # Synchronize local code and dependency cache within the container
-      - .:/app
-      - ~/.gradle:/home/gradle/.gradle
-    environment:
-      # manage datasource to set up before configuration
-      SPRING_DATASOURCE_URL: jdbc:postgresql://devsu-client-db:5432/${DB_NAME}
-      SPRING_DATASOURCE_USERNAME: ${DB_USER}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-    # Command to make Gradle listen for changes (-t) and run backend continuously
-    command: ./gradlew :infrastructure:bootRun -t --no-daemon
+    env_file:
+      - .env
     depends_on:
       - devsu-client-db # indicates to run first the db
+      - devsu-client-queue
     networks:
       - devsu-fintech-network
   devsu-client-queue:
