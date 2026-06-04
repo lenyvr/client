@@ -2,7 +2,7 @@ WITH idt_insert AS (
     INSERT INTO identification_type (name, description)
     VALUES ('DNI', 'Numero de identificacion nacional')
     ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name
-  RETURNING identification_type_id
+    RETURNING identification_type_id
 ),
 gender_insert AS (
     INSERT INTO gender (name, description)
@@ -12,9 +12,9 @@ gender_insert AS (
 ),
 person_insert AS (
     INSERT INTO person (first_name, last_name, age, identification_number, address, postal_code, contact_number
-                       , identification_type_id, gender_id)
+                     , identification_type_id, gender_id)
     SELECT 'Jose', 'Lema', 34, '1234567', 'Otavalo sn y principal', '37890', '098254785'
-           , identification_type_id, gender_id
+          , identification_type_id, gender_id
     FROM idt_insert, gender_insert
     ON CONFLICT (identification_number) DO UPDATE SET identification_number = EXCLUDED.identification_number
     RETURNING person_id
