@@ -17,6 +17,11 @@ spring:
     init:
       # Run schema.sql (DDL) and data.sql (catalogs + demo data) on startup.
       mode: always
+  rabbitmq:
+    host: "${RBQ_HOST}"
+    port: ${RBQ_PORT}
+    username: "${RBQ_USER}"
+    password: "${RBQ_PASSWORD}"
 
 springdoc:
   swagger-ui:
