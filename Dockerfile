@@ -29,7 +29,7 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
 # 5. Copy generated JAR (Spring Boot by default add the version name)
-COPY --from=build /app/infrastructure/build/libs/*SNAPSHOT.jar app.jar
+COPY --from=build /app/infrastructure/build/libs/infrastructure-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
