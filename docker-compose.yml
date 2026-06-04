@@ -14,20 +14,12 @@ services:
       - devsu-fintech-network
 
   devsu-client-app:
-    image: gradle:8.14-jdk21
+    build: .
     container_name: devsu-client-app
-    working_dir: /app
     ports:
       - "${APP_PORT}:8080"
     env_file:
       - .env
-    volumes:
-      # Synchronize local code and dependency cache within the container
-      - .:/app
-      - ~/.gradle:/home/gradle/.gradle
-    # Command to make Gradle listen for changes (-t) and run backend continuously
-    # command: ./gradlew :infrastructure:bootRun -t --no-daemon
-    command: ./gradlew :infrastructure:bootRun --no-daemon
     depends_on:
       - devsu-client-db # indicates to run first the db
       - devsu-client-queue

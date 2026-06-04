@@ -7,6 +7,9 @@ import com.devsu.fintech.domain.model.Client;
 import com.devsu.fintech.domain.port.out.AccountsValidationSPI;
 import com.devsu.fintech.domain.port.out.ClientRepositorySPI;
 
+/**
+ * Deactivates a client (soft delete): sets status to false.
+ */
 public class DeactivateClientUseCaseImpl implements DeactivateClientUseCase {
 
     private final ClientRepositorySPI clientRepository;
