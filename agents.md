@@ -31,19 +31,32 @@
 Always can review in infrastructure>src>main>resources for the schema.sql file to see the current database structure, also can review data.sql file to see the current database data.
 
 **Tasks to be done:**
-- [ ] generate create a client use case: if the client already exists because of the same person identification_number but is inactive, the system must update the client with the new data and let in active status.
-- [ ] generate an Update client use case.
-- [ ] generate a List clients use case; this one must have an optional filter that will search by name, identification, or client code.
+- [x] generate create a client use case: if the client already exists because of the same person identification_number but is inactive, the system must update the client with the new data and let in active status.
+- [x] generate an Update client use case.
+- [x] generate a List clients use case; this one must have an optional filter that will search by name, identification, or client code.
 The search must not be case-sensitive. for e.g., searching for "Juan" should return "Juan" and "juan". Just active clients (status in true) must be returned.
-- [ ] Generate a deactivate client use case. The status of the client must be set to false.
-- [ ] Generate unit tests for each use case.
-- [ ] Generate unit test for client and person entity.
-- [ ] Generate integration tests for the use cases.
+- [x] Generate a deactivate client use case. The status of the client must be set to false.
+- [x] Generate unit tests for each use case.
+- [x] Generate unit test for client and person entity.
+- [x] Generate integration tests for the use cases.
 
 ## 3. Technical Decisions Made
 *Record here any significant changes to the code, custom exceptions, mappers, or design patterns used.*
 - It is confirmed that dependency injection of the layer of `application` It will be managed centrally through a class `@Configuration` in the infrastructure (`BeanConfiguration`), keeping the application clean and organized.
+- **Domain model:** `Client extends Person` (inheritance, faithful to the requirement). Invariants are enforced in the constructors (`InvalidPersonDataException` / `InvalidClientDataException`). Persistence uses two separate JPA entities (`PersonEntity` + `ClientEntity`) with a `@OneToOne(cascade = ALL)` so saving the client persists the person first.
+- **Output ports (SPI):** `ClientRepositorySPI` (find by identification / by client id, save, searchActive) and `PasswordEncoderSPI`. Implemented in infrastructure by `ClientPersistenceAdapter` and `PasswordEncoderAdapter`.
+- **Input ports / use cases:** interfaces in `application.port.in` with `*Impl` POJOs in `application.usecase`, wired manually in `BeanConfiguration`. Update uses an `UpdateClientCommand` record so `password` can be optional without breaking the domain invariant.
+- **Create rule:** lookup by person `identification_number`. Active → `ClientAlreadyExistsException` (409). Inactive → data updated, reactivated. New → person+client created. Password always BCrypt-encoded.
+- **Password:** stored encrypted via Spring Security `BCryptPasswordEncoder` (added `spring-security-crypto`, no full security starter).
+- **List:** case-insensitive `LIKE %filter%` JPQL over first/last name, identification number and client code; only `status = true` returned; null/blank filter returns all active.
+- **Deactivate:** soft delete via `DELETE /clients/{clientId}` → `status = false`.
+- **Error handling:** centralized in `GlobalExceptionHandler` (`@RestControllerAdvice`) returning RFC 7807 `ProblemDetail` (409/404/400). Logging centralized with Lombok `@Slf4j`.
+- **API docs:** springdoc OpenAPI; Swagger UI at `/swagger-ui.html`.
+- **DB init:** Hibernate `ddl-auto=none`; schema created from `schema.sql` and seeded from `data.sql` (`spring.sql.init.mode=always`).
+- **Tests:** JUnit5 for entities (domain), JUnit5 + Mockito for use cases (application), `@SpringBootTest` + MockMvc + Testcontainers PostgreSQL for the integration flow (infrastructure).
+- Removed the IntelliJ template `Main.java` files from the three modules.
 
 ## 4. Notes and Bugs
 *Note here if business information is missing, if there is a bug in Docker, or if there are any pending dependencies.*
-- None currently. Ready to start use cases.
+- **Fixed:** `data.sql` `INSERT INTO person` was missing the `gender_id` column in its column list (8 columns vs 9 selected values), which broke startup. Added `gender_id` to the column list.
+- The committed `.env` contains real credentials (`DB_PASSWORD`, RabbitMQ admin/admin). It is in `.gitignore`; answer: I have never versioned this file in the repository.
