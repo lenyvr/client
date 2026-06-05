@@ -25,9 +25,9 @@ services:
       - devsu-client-queue
     networks:
       - devsu-fintech-network
-  devsu-client-queue:
+  devsu-fintech-queue:
     image: rabbitmq:3.13-management-alpine
-    container_name: devsu-client-queue
+    container_name: devsu-fintech-queue
     ports:
       # Standar port for application communication (AMQP)
       - "5672:5672"
@@ -39,10 +39,14 @@ services:
       RABBITMQ_DEFAULT_PASS: ${RBQ_PASSWORD}
     volumes:
       # Data persistence to keep queue even if the container is down
-      - rabbitmq_data:/var/lib/rabbitmq
+      - devsu-rabbitmq-data::/var/lib/rabbitmq
     networks:
       - devsu-fintech-network
 networks:
   devsu-fintech-network:
+    name: devsu-fintech-network
+    driver: bridge
+    attachable: true
 volumes:
-  rabbitmq_data:
+  devsu-rabbitmq-data:
+    name: devsu-rabbitmq-data

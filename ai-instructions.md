@@ -38,7 +38,7 @@ The project is strictly divided into three layers. **All directory, package, and
 - **Dependency Injection:** Always prefer constructor injection. Do not use `@Autowired` on fields.
 - **Error Handling:** Centralized in the infrastructure layer using `@ControllerAdvice`, translating domain exceptions into appropriate HTTP responses.
 - **Naming Conventions:**
-    - Output Ports: `[Name]SPI`.
+    - Output Ports: `[Name][PortType]SPI`.
     - Use Cases: `[Action][Entity]UseCase`.
     - Controllers: `[Name]Controller`
 
@@ -75,19 +75,19 @@ public class BeanConfiguration {
 The project is fully containerized and managed with Gradle (Kotlin DSL). The assistant must respect the following configurations when creating scripts, properties, or new modules:
 
 ### A. Dependency Management (Gradle Kotlin DSL)
-- Any new dependency must be added to build.gradle.kts using Kotlin syntax (e.g., implementation("org.springframework.boot:spring-boot-starter-data-jpa")).
-- It is **FORBIDDEN** to generate configuration blocks in Groovy or Maven (pom.xml) format.
+- Any new dependency must be added to build.gradle.kts using Kotlin syntax (e.g., implementation(`"org.springframework.boot:spring-boot-starter-data-jpa"`)).
+- It is **FORBIDDEN** to generate configuration blocks in Groovy or Maven (`pom.xml`) format.
 
 ### B. Docker and Database Architecture
 The project has a multi-container environment managed by `docker-compose.yml`:
-- **Database Service**: PostgreSQL (Check the environment variables in `docker-compose.yml` for credentials, database name, and port before suggesting changes to `application.yml).
+- **Database Service**: PostgreSQL (Check the environment variables in `docker-compose.yml` for credentials, database name, and port before suggesting changes to `application.yml`).
 - **Application Service**: Built from the project's `Dockerfile`, which compiles the JAR using Gradle and runs it.
 
 ### C. Key Project Commands
 When suggesting terminal commands, exclusively use:
 - **Compile/Build:** `./gradlew clean build`
 - **Spin up full environment:** `docker-compose up --build`
-- **Spin up database only:** `docker-compose up   pizzaioli-cost-db`
+- **Spin up database only:** `docker-compose up   devsu-client-db`
 
 ## 7. Version Control (Git)
 
@@ -105,6 +105,5 @@ All commits must follow the structure: `<type>(<scope>): <short description in l
 
 ### B. Branching Strategy
 - The primary branch is `main`. It is **forbidden** to suggest direct changes to it when developing a new feature.
-- Las ramas de trabajo deben seguir la nomenclatura: `feature/[id-tarea]-[descripcion-corta]` o `bugfix/[id-tarea]-[descripcion]`.
-- Working branches must follow the nomenclature: `feature/[task-id]-[short-description]` or `bugfix/[task-id]-[description].
+- Working branches must follow the nomenclature: `feature/[task-id]-[short-description]` or `bugfix/[task-id]-[description]`.
     - *Example:* `feature/TASK-04-register-user`.
