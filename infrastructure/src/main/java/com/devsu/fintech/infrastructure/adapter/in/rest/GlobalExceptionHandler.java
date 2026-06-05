@@ -1,9 +1,6 @@
 package com.devsu.fintech.infrastructure.adapter.in.rest;
 
-import com.devsu.fintech.domain.exception.ClientAlreadyExistsException;
-import com.devsu.fintech.domain.exception.ClientNotFoundException;
-import com.devsu.fintech.domain.exception.InvalidClientDataException;
-import com.devsu.fintech.domain.exception.InvalidPersonDataException;
+import com.devsu.fintech.domain.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -26,6 +23,18 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleAlreadyExists(ClientAlreadyExistsException ex) {
         log.warn("Conflict: {}", ex.getMessage());
         return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(ClientHasOpenAccountsException.class)
+    public ProblemDetail handleHasOpenAccounts(ClientHasOpenAccountsException ex) {
+        log.warn("Conflict: {}", ex.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(AccountsServiceUnavailableException.class)
+    public ProblemDetail handleAccountsServiceUnavailable(AccountsServiceUnavailableException ex) {
+        log.error("Service accounts unavailable: {}", ex.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
     }
 
     @ExceptionHandler(ClientNotFoundException.class)
