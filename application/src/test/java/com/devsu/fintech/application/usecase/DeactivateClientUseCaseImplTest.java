@@ -1,7 +1,9 @@
 package com.devsu.fintech.application.usecase;
 
+import com.devsu.fintech.domain.exception.ClientHasOpenAccountsException;
 import com.devsu.fintech.domain.exception.ClientNotFoundException;
 import com.devsu.fintech.domain.model.Client;
+import com.devsu.fintech.domain.port.out.AccountsValidationSPI;
 import com.devsu.fintech.domain.port.out.ClientRepositorySPI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,17 +27,21 @@ class DeactivateClientUseCaseImplTest {
     @Mock
     private ClientRepositorySPI clientRepository;
 
+    @Mock
+    private AccountsValidationSPI accountsValidation;
+
     private DeactivateClientUseCaseImpl useCase;
 
     @BeforeEach
     void setUp() {
-        useCase = new DeactivateClientUseCaseImpl(clientRepository);
+        useCase = new DeactivateClientUseCaseImpl(clientRepository, accountsValidation);
     }
 
     @Test
     void setsStatusToFalseAndSaves() {
         Client active = ClientTestData.client(10L, 5L, "1234567", "p", true);
         when(clientRepository.findByClientId(10L)).thenReturn(Optional.of(active));
+        when(accountsValidation.hasOpenAccounts(10L)).thenReturn(false);
         when(clientRepository.save(any(Client.class))).thenAnswer(inv -> inv.getArgument(0));
 
         useCase.deactivate(10L);
@@ -50,6 +56,16 @@ class DeactivateClientUseCaseImplTest {
         when(clientRepository.findByClientId(99L)).thenReturn(Optional.empty());
 
         assertThrows(ClientNotFoundException.class, () -> useCase.deactivate(99L));
+        verify(clientRepository, never()).save(any());
+    }
+
+    @Test
+    void throwsWhenClientHasOpenAccounts() {
+        Client active = ClientTestData.client(10L, 5L, "1234567", "p", true);
+        when(clientRepository.findByClientId(10L)).thenReturn(Optional.of(active));
+        when(accountsValidation.hasOpenAccounts(10L)).thenReturn(true);
+
+        assertThrows(ClientHasOpenAccountsException.class, () -> useCase.deactivate(10L));
         verify(clientRepository, never()).save(any());
     }
 }

@@ -1,0 +1,11 @@
+spring:
+  sql:
+    init:
+      mode: always
+  jpa:
+    defer-datasource-initialization: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
