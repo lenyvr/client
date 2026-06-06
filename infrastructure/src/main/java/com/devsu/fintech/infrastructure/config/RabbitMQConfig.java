@@ -14,12 +14,9 @@ import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-
-
 @Configuration
 public class RabbitMQConfig {
 
-    // accounts microservice topology (outbound RPC)
     public static final String EXCHANGE = "accounts.exchange";
     public static final String CHECK_REQUEST_QUEUE = "accounts.check-request";
     public static final String DEACTIVATION_RESPONSE_QUEUE = "client.deactivation-response";
