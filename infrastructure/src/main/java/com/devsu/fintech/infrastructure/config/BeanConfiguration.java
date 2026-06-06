@@ -2,14 +2,17 @@ package com.devsu.fintech.infrastructure.config;
 
 import com.devsu.fintech.application.port.in.CreateClientUseCase;
 import com.devsu.fintech.application.port.in.DeactivateClientUseCase;
+import com.devsu.fintech.application.port.in.GetClientReportUseCase;
 import com.devsu.fintech.application.port.in.ListClientsUseCase;
 import com.devsu.fintech.application.port.in.UpdateClientUseCase;
 import com.devsu.fintech.application.usecase.CreateClientUseCaseImpl;
 import com.devsu.fintech.application.usecase.DeactivateClientUseCaseImpl;
+import com.devsu.fintech.application.usecase.GetClientReportUseCaseImpl;
 import com.devsu.fintech.application.usecase.ListClientsUseCaseImpl;
 import com.devsu.fintech.application.usecase.UpdateClientUseCaseImpl;
 import com.devsu.fintech.domain.port.out.AccountsValidationSPI;
 import com.devsu.fintech.domain.port.out.ClientRepositorySPI;
+import com.devsu.fintech.domain.port.out.IdentificationTypeLookupSPI;
 import com.devsu.fintech.domain.port.out.PasswordEncoderSPI;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,5 +45,11 @@ public class BeanConfiguration {
     public DeactivateClientUseCase deactivateClientUseCase(ClientRepositorySPI clientRepository,
                                                            AccountsValidationSPI accountsValidation) {
         return new DeactivateClientUseCaseImpl(clientRepository, accountsValidation);
+    }
+
+    @Bean
+    public GetClientReportUseCase getClientReportUseCase(ClientRepositorySPI clientRepository,
+                                                         IdentificationTypeLookupSPI identificationTypeLookup) {
+        return new GetClientReportUseCaseImpl(clientRepository, identificationTypeLookup);
     }
 }
