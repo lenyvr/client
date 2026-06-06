@@ -7,6 +7,7 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.support.converter.DefaultJackson2JavaTypeMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ public class RabbitMQConfig {
     public static final String DEACTIVATION_RESPONSE_QUEUE = "client.deactivation-response";
     public static final String CHECK_REQUEST_ROUTING_KEY = "accounts.check";
     public static final String DEACTIVATION_RESPONSE_ROUTING_KEY = "client.deactivation";
+    private static final String TRUSTED_PACKAGES = "*";
 
     @Bean
     public DirectExchange accountsExchange() {
@@ -47,7 +49,13 @@ public class RabbitMQConfig {
 
     @Bean
     public Jackson2JsonMessageConverter messageConverter() {
-        return new Jackson2JsonMessageConverter();
+        Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
+        converter.setAlwaysConvertToInferredType(true);
+        DefaultJackson2JavaTypeMapper typeMapper = new DefaultJackson2JavaTypeMapper();
+        typeMapper.setTrustedPackages(TRUSTED_PACKAGES);
+        converter.setJavaTypeMapper(typeMapper);
+
+        return converter;
     }
 
     @Bean

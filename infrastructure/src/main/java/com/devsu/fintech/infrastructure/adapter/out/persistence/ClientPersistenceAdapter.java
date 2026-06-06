@@ -31,7 +31,7 @@ public class ClientPersistenceAdapter implements ClientRepositorySPI {
 
     @Override
     public Optional<Client> findByClientId(Long clientId) {
-        return clientJpaRepository.findById(clientId)
+        return clientJpaRepository.findByStatusAndClientId (clientId, ClientStatus.ACTIVE)
                 .map(ClientPersistenceMapper::toDomain);
     }
 

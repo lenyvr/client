@@ -17,14 +17,15 @@ services:
     build: .
     container_name: devsu-client-app
     ports:
-      - "${APP_PORT}:8080"
+      - "8080:${APP_PORT}"
     env_file:
       - .env
     depends_on:
       - devsu-client-db # indicates to run first the db
-      - devsu-client-queue
+      - devsu-fintech-queue
     networks:
       - devsu-fintech-network
+
   devsu-fintech-queue:
     image: rabbitmq:3.13-management-alpine
     container_name: devsu-fintech-queue
@@ -39,7 +40,7 @@ services:
       RABBITMQ_DEFAULT_PASS: ${RBQ_PASSWORD}
     volumes:
       # Data persistence to keep queue even if the container is down
-      - devsu-rabbitmq-data::/var/lib/rabbitmq
+      - devsu-rabbitmq-data:/var/lib/rabbitmq
     networks:
       - devsu-fintech-network
 networks:

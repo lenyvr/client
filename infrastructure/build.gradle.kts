@@ -15,28 +15,19 @@ dependencies {
     implementation(project(":application"))
     implementation(project(":domain"))
 
-    // Web (REST controllers)
     implementation("org.springframework.boot:spring-boot-starter-web")
-    // Bean Validation for request DTOs
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    // Persistence (JPA adapters)
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    // Messaging (RabbitMQ - see docker-compose)
     implementation("org.springframework.boot:spring-boot-starter-amqp")
-    // PostgreSQL driver (runtime only)
     runtimeOnly("org.postgresql:postgresql")
 
-    // API documentation (Swagger / OpenAPI)
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
-    // Password encoding (BCrypt) without pulling the full security starter
     implementation("org.springframework.security:spring-security-crypto")
 
-    // Lombok for centralized logging (@Slf4j) and adapter boilerplate
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    // Integration tests against a real PostgreSQL via Testcontainers
     testImplementation(platform("org.testcontainers:testcontainers-bom:1.20.4"))
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
