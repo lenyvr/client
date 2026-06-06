@@ -31,10 +31,11 @@ public class AccountsValidationRabbitMQAdapter implements AccountsValidationSPI 
 
         if (response == null) {
             log.warn("No response from accounts service for clientId={}. retrying.", clientId);
-            response = (AccountCheckResponseMessage) rabbitTemplate.convertSendAndReceive(
+            response = rabbitTemplate.convertSendAndReceiveAsType(
                     RabbitMQConfig.EXCHANGE,
                     RabbitMQConfig.CHECK_REQUEST_ROUTING_KEY,
-                    new AccountCheckRequestMessage(clientId)
+                    new AccountCheckRequestMessage(clientId),
+                    new ParameterizedTypeReference<AccountCheckResponseMessage>() {}
             );
         }
 

@@ -40,6 +40,7 @@ The search must not be case-sensitive. for e.g., searching for "Juan" should ret
 - [x] Generate unit test for client and person entity.
 - [x] Generate integration tests for the use cases.
 - [x] Deactivate client: before deactivating, validate asynchronously via RabbitMQ (RPC pattern) that the client has no open accounts in the `accounts` microservice. If open accounts exist, reject with 409 Conflict. Topology: DirectExchange `accounts.exchange`, queues `accounts.check-request` and `client.deactivation-response`. New port: `AccountsValidationSPI`. New exception: `ClientHasOpenAccountsException`.
+- [x] RabbitMQ inbound RPC consumer: listens on `clients.exchange` / `clients.report-request`, looks up an active client by identification number, and returns `ClientReportResponseDTO`. New port: `IdentificationTypeLookupSPI`. New use case: `GetClientReportUseCase`.
 
 ## 3. Technical Decisions Made
 *Record here any significant changes to the code, custom exceptions, mappers, or design patterns used.*
