@@ -40,5 +40,6 @@ CREATE TABLE if not exists public.client (
     status bool NOT NULL,
     CONSTRAINT client_pk PRIMARY KEY (client_id),
     CONSTRAINT client_unique UNIQUE (client_code),
+    CONSTRAINT client_person_unique UNIQUE (person_id),
     CONSTRAINT client_person_fk FOREIGN KEY (person_id) REFERENCES public.person(person_id)
 );

@@ -5,11 +5,13 @@ import com.devsu.fintech.application.port.in.DeactivateClientUseCase;
 import com.devsu.fintech.application.port.in.GetClientReportUseCase;
 import com.devsu.fintech.application.port.in.ListClientsUseCase;
 import com.devsu.fintech.application.port.in.UpdateClientUseCase;
+import com.devsu.fintech.application.port.in.VerifyClientUseCase;
 import com.devsu.fintech.application.usecase.CreateClientUseCaseImpl;
 import com.devsu.fintech.application.usecase.DeactivateClientUseCaseImpl;
 import com.devsu.fintech.application.usecase.GetClientReportUseCaseImpl;
 import com.devsu.fintech.application.usecase.ListClientsUseCaseImpl;
 import com.devsu.fintech.application.usecase.UpdateClientUseCaseImpl;
+import com.devsu.fintech.application.usecase.VerifyClientUseCaseImpl;
 import com.devsu.fintech.domain.port.out.AccountsValidationSPI;
 import com.devsu.fintech.domain.port.out.ClientRepositorySPI;
 import com.devsu.fintech.domain.port.out.IdentificationTypeLookupSPI;
@@ -51,5 +53,10 @@ public class BeanConfiguration {
     public GetClientReportUseCase getClientReportUseCase(ClientRepositorySPI clientRepository,
                                                          IdentificationTypeLookupSPI identificationTypeLookup) {
         return new GetClientReportUseCaseImpl(clientRepository, identificationTypeLookup);
+    }
+
+    @Bean
+    public VerifyClientUseCase verifyClientUseCase(ClientRepositorySPI clientRepository) {
+        return new VerifyClientUseCaseImpl(clientRepository);
     }
 }
