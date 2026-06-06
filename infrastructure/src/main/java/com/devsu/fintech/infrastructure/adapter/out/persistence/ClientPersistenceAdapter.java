@@ -4,6 +4,7 @@ import com.devsu.fintech.domain.model.Client;
 import com.devsu.fintech.domain.port.out.ClientRepositorySPI;
 import com.devsu.fintech.infrastructure.adapter.out.persistence.entity.ClientEntity;
 import com.devsu.fintech.infrastructure.adapter.out.persistence.repository.ClientJpaRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +16,10 @@ import java.util.Optional;
  * Saving a client cascades its person, so the person is persisted first.
  */
 @Repository
+@RequiredArgsConstructor
 public class ClientPersistenceAdapter implements ClientRepositorySPI {
 
     private final ClientJpaRepository clientJpaRepository;
-
-    public ClientPersistenceAdapter(ClientJpaRepository clientJpaRepository) {
-        this.clientJpaRepository = clientJpaRepository;
-    }
 
     @Override
     public Optional<Client> findByIdentificationNumber(String identificationNumber) {

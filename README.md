@@ -65,7 +65,7 @@ This starts three services:
 ### Local Development
 
 ```bash
-# Start dependencies only
+# Start dependencies only, you must verify if the account microservice haven't been started the queue first to avoid conflicts
 docker-compose up devsu-client-db devsu-client-queue
 
 # Run the app with auto-reload

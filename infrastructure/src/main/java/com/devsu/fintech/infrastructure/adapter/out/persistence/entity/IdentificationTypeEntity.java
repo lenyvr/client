@@ -6,9 +6,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
 
 @Entity
 @Table(name = "identification_type")
+@Getter
 public class IdentificationTypeEntity {
 
     @Id
@@ -21,16 +23,4 @@ public class IdentificationTypeEntity {
 
     @Column(name = "description")
     private String description;
-
-    public Integer getIdentificationTypeId() {
-        return identificationTypeId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 }

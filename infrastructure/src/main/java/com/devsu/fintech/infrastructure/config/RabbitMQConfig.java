@@ -86,7 +86,6 @@ public class RabbitMQConfig {
         return template;
     }
 
-    // clients.exchange shared by report and verify inbound consumers
     @Bean
     public DirectExchange clientExchange() {
         return new DirectExchange(CLIENT_EXCHANGE);
@@ -118,8 +117,6 @@ public class RabbitMQConfig {
                 .with(CLIENT_VERIFY_ROUTING_KEY);
     }
 
-    // Ensures @RabbitListener consumers use Jackson and respect auto-startup
-    // (spring.rabbitmq.listener.simple.auto-startup=false in test YAML prevents broker connections)
     @Bean
     public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
             ConnectionFactory connectionFactory,

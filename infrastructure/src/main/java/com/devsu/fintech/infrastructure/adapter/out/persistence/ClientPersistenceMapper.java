@@ -3,15 +3,14 @@ package com.devsu.fintech.infrastructure.adapter.out.persistence;
 import com.devsu.fintech.domain.model.Client;
 import com.devsu.fintech.infrastructure.adapter.out.persistence.entity.ClientEntity;
 import com.devsu.fintech.infrastructure.adapter.out.persistence.entity.PersonEntity;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Maps between the {@link Client} domain entity and its JPA representation
  * ({@link ClientEntity} + {@link PersonEntity}).
  */
+@RequiredArgsConstructor
 final class ClientPersistenceMapper {
-
-    private ClientPersistenceMapper() {
-    }
 
     static ClientEntity toEntity(Client client) {
         PersonEntity person = new PersonEntity();

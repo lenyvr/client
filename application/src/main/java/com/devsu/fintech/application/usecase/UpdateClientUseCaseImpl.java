@@ -24,8 +24,7 @@ public class UpdateClientUseCaseImpl implements UpdateClientUseCase {
 
     @Override
     public Client update(Long clientId, UpdateClientCommand command) {
-        Client current = clientRepository.findByClientId(clientId)
-                .orElseThrow(() -> new ClientNotFoundException(clientId));
+        Client current = validateClientExistAndIsActive(clientId);
 
         String password = (command.password() == null || command.password().isBlank())
                 ? current.getPassword()
@@ -49,5 +48,16 @@ public class UpdateClientUseCaseImpl implements UpdateClientUseCase {
                 current.getStatus()
         );
         return clientRepository.save(updated);
+    }
+
+    private Client validateClientExistAndIsActive(Long clientId) {
+        Client current = clientRepository.findByClientId(clientId)
+                .orElseThrow(() -> new ClientNotFoundException(clientId));
+
+        if (!current.isActive()) {
+            throw new ClientNotFoundException(current.getClientId());
+        }
+
+        return  current;
     }
 }
