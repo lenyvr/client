@@ -14,6 +14,8 @@ import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
+
 @Configuration
 public class RabbitMQConfig {
 
@@ -24,10 +26,12 @@ public class RabbitMQConfig {
     public static final String CHECK_REQUEST_ROUTING_KEY = "accounts.check";
     public static final String DEACTIVATION_RESPONSE_ROUTING_KEY = "client.deactivation";
 
-    // client-report topology (inbound RPC consumer)
-    public static final String CLIENT_REPORT_EXCHANGE = "clients.exchange";
+    // clients.exchange: inbound RPC consumers (report + verify)
+    public static final String CLIENT_EXCHANGE = "clients.exchange";
     public static final String CLIENT_REPORT_REQUEST_QUEUE = "clients.report-request";
     public static final String CLIENT_REPORT_ROUTING_KEY = "clients.report-request";
+    public static final String CLIENT_VERIFY_REQUEST_QUEUE = "clients.verify-request";
+    public static final String CLIENT_VERIFY_ROUTING_KEY = "clients.verify-request";
 
     private static final String TRUSTED_PACKAGES = "*";
 
@@ -83,5 +87,51 @@ public class RabbitMQConfig {
         template.setReplyAddress(DEACTIVATION_RESPONSE_QUEUE);
         template.setReplyTimeout(5000);
         return template;
+    }
+
+    // clients.exchange shared by report and verify inbound consumers
+    @Bean
+    public DirectExchange clientExchange() {
+        return new DirectExchange(CLIENT_EXCHANGE);
+    }
+
+    @Bean
+    public Queue clientReportRequestQueue() {
+        return new Queue(CLIENT_REPORT_REQUEST_QUEUE, true);
+    }
+
+    @Bean
+    public Binding clientReportRequestBinding(Queue clientReportRequestQueue,
+                                              DirectExchange clientExchange) {
+        return BindingBuilder.bind(clientReportRequestQueue)
+                .to(clientExchange)
+                .with(CLIENT_REPORT_ROUTING_KEY);
+    }
+
+    @Bean
+    public Queue clientVerifyRequestQueue() {
+        return new Queue(CLIENT_VERIFY_REQUEST_QUEUE, true);
+    }
+
+    @Bean
+    public Binding clientVerifyRequestBinding(Queue clientVerifyRequestQueue,
+                                              DirectExchange clientExchange) {
+        return BindingBuilder.bind(clientVerifyRequestQueue)
+                .to(clientExchange)
+                .with(CLIENT_VERIFY_ROUTING_KEY);
+    }
+
+    // Ensures @RabbitListener consumers use Jackson and respect auto-startup
+    // (spring.rabbitmq.listener.simple.auto-startup=false in test YAML prevents broker connections)
+    @Bean
+    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+            ConnectionFactory connectionFactory,
+            Jackson2JsonMessageConverter messageConverter,
+            RabbitProperties rabbitProperties) {
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setMessageConverter(messageConverter);
+        factory.setAutoStartup(rabbitProperties.getListener().getSimple().isAutoStartup());
+        return factory;
     }
 }

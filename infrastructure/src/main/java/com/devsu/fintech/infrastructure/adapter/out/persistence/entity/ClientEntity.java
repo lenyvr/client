@@ -25,7 +25,7 @@ public class ClientEntity {
     private Long clientId;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "person_id", nullable = false)
+    @JoinColumn(name = "person_id", nullable = false, unique = true)
     private PersonEntity person;
 
     @Column(name = "client_code", nullable = false, unique = true)
